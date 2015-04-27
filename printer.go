@@ -39,5 +39,5 @@ func PrintUser(user User) {
 }
 
 func PrintUserOneLine(user User) {
-	color.Printf("m", fmt.Sprintf("%s <%s>\n", user.Birthdate().String(), user.Id()))
+	color.Printf("m", fmt.Sprintf("%s <%s>\n", user.DisplayName(), user.Id()))
 }
