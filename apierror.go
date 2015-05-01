@@ -1,5 +1,5 @@
 /*
-xingapi is a wrapper and connector to the XING API (https://dev.xing.com/docs/resources)
+Package xingapi is a wrapper and connector to the XING API (https://dev.xing.com/docs/resources)
 */
 package xingapi
 
