@@ -1,3 +1,6 @@
+
+[![GoDoc](https://godoc.org/github.com/q231950/xingapi?status.svg)](https://godoc.org/github.com/q231950/xingapi)
+
 # xingapi
 Open source XING API adapter written in Go
 
