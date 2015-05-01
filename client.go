@@ -8,11 +8,10 @@ import (
 	"strconv"
 )
 
-/*
-A UserHandler is used as parameter to methods that fetch a User
-Either the User or error might be nil
-*/
+// A UserHandler is used as parameter to methods that fetch a User. Either the User or error might be nil.
 type UserHandler func(User, error)
+
+// The ContactsHandler can be passed as parameter to methods fetching contact lists. Either ContactsList or error might be nil.
 type ContactsHandler func(ContactsList, error)
 
 type Client interface {
