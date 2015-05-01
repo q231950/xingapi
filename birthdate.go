@@ -4,7 +4,7 @@ package xingapi
 
 import "fmt"
 
-// The Birtdate represents a user's birthday
+// A Birthdate represents a user's birthday
 type Birthdate struct {
 	Day   uint
 	Month uint
