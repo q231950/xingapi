@@ -30,7 +30,7 @@ type XINGClient struct {
 	OAuthConsumer OAuthConsumer
 }
 
-// Fetches the logged in user
+// Me fetches the logged in user
 func (client *XINGClient) Me(handler UserHandler) {
 	var me User
 	consumer := new(OAuthConsumer)
@@ -49,7 +49,7 @@ func (client *XINGClient) Me(handler UserHandler) {
 	})
 }
 
-// Fetches the contact list of the logged in user
+// ContactsList fetches the contact list of the logged in user from the offset with a batch count of limit
 func (client *XINGClient) ContactsList(userID string, limit int, offset int, handler ContactsHandler) {
 	consumer := new(OAuthConsumer)
 	client.OAuthConsumer = *consumer
@@ -69,7 +69,7 @@ func (client *XINGClient) ContactsList(userID string, limit int, offset int, han
 	})
 }
 
-// Fetches the User for the given user id
+// User fetches the User for the given user id
 func (client *XINGClient) User(id string, handler UserHandler) {
 	consumer := new(OAuthConsumer)
 	client.OAuthConsumer = *consumer
@@ -84,7 +84,7 @@ func (client *XINGClient) User(id string, handler UserHandler) {
 	})
 }
 
-// Fetches the conversations of the user with the given id
+// Messages fetches the conversations of the user with the given id and prints out raw json
 func (client *XINGClient) Messages(userId string, handler func(err error)) {
 	client.OAuthConsumer.Get("/v1/users/"+userId+"/conversations", url.Values{}, func(reader io.Reader, err error) {
 		robots, readError := ioutil.ReadAll(reader)
