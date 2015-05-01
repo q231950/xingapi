@@ -33,6 +33,10 @@ func PrintMessageWithParam(message string, param string) {
 	color.Print("m", fmt.Sprintf("%s%s", param, ""))
 }
 
+func Print(s string) {
+	color.Printf("d", s)
+}
+
 func PrintUser(user User) {
 	color.Printf("", fmt.Sprintf("-----------------------------------\n%s <%s>:\n", user.DisplayName(), user.Id()))
 	color.Printf("d", fmt.Sprintf("Email address:\t\t%s\nDate of birth:\t\t%s\n", user.ActiveEmail(), user.Birthdate()))

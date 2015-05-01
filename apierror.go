@@ -1,3 +1,4 @@
+// xingapi wrapper and connector to the XING API (https://dev.xing.com/docs/resources)
 // apierror.go
 package xingapi
 
