@@ -1,15 +1,16 @@
 // birthdate.go
 
-package xingapi 
+package xingapi
 
 import "fmt"
 
+// The Birtdate represents a user's birthday
 type Birthdate struct {
-	Day uint
+	Day   uint
 	Month uint
-	Year uint
+	Year  uint
 }
 
-func (birthdate Birthdate)String() string {
+func (birthdate Birthdate) String() string {
 	return fmt.Sprintf("%d.%d.%d", birthdate.Day, birthdate.Month, birthdate.Year)
 }

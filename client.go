@@ -1,4 +1,3 @@
-// client.go
 package xingapi
 
 import (
@@ -9,6 +8,10 @@ import (
 	"strconv"
 )
 
+/*
+A UserHandler is used as parameter to methods that fetch a User
+Either the User or error might be nil
+*/
 type UserHandler func(User, error)
 type ContactsHandler func(ContactsList, error)
 
