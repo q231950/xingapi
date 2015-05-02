@@ -1,5 +1,3 @@
-// oauthauthenticator.go
-
 package xingapi
 
 import (

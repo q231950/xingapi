@@ -1,4 +1,3 @@
-// oauthconsumer.go
 package xingapi
 
 import (
@@ -10,12 +9,22 @@ import (
 	"net/url"
 )
 
+// ResponseHandler handles HTTP response bodies and a potential error
 type ResponseHandler func(io.Reader, error)
+
+// AuthenticateHandler will be called upon successful authentication
 type AuthenticateHandler func()
 
+/*
+OAuthConsumer connects to the API in a authenticated manner. It wraps GET calls
+to the API by attaching OAuth information to them.
+*/
 type OAuthConsumer struct {
-	Authenticated        bool
-	oauthAuthenticator   *OAuthAuthenticator
+	// Authenticated indicates whether or not the consumer is currently authenticated
+	Authenticated      bool
+	oauthAuthenticator *OAuthAuthenticator
+
+	// AuthenticateHandlers store handlers to be executed once authentication was successful
 	AuthenticateHandlers []AuthenticateHandler
 }
 
@@ -49,6 +58,7 @@ func (consumer *OAuthConsumer) requestCredentials(handler func()) {
 	})
 }
 
+// Get performs get requests to the API while using OAuth authentication.
 func (consumer *OAuthConsumer) Get(path string, parameters url.Values, handler ResponseHandler) {
 	consumer.addAuthenticationHandler(func() {
 		httpClient := new(http.Client)
