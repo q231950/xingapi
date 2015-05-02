@@ -14,16 +14,16 @@ type UserHandler func(User, error)
 // The ContactsHandler can be passed as parameter to methods fetching contact lists. Either ContactsList or error might be nil.
 type ContactsHandler func(ContactsList, error)
 
-// The Client interface describes the available methods that wrap around the XING API. 
+// The Client interface describes the available methods that wrap around the XING API.
 type Client interface {
 	User(id string, handler UserHandler)
 	ContactsList(userID string, limit int, offset int, handler ContactsHandler)
 	Me(handler UserHandler)
-	Messages(userId string, handler func(err error))
+	Messages(userID string, handler func(err error))
 }
 
-/* 
-The XINGClient conforms to the Client interface and handles oAuth authentication for the XING API. 
+/*
+The XINGClient conforms to the Client interface and handles oAuth authentication for the XING API.
 It manages all communication with the API's endpoints.
 */
 type XINGClient struct {
@@ -85,8 +85,8 @@ func (client *XINGClient) User(id string, handler UserHandler) {
 }
 
 // Messages fetches the conversations of the user with the given id and prints out raw json
-func (client *XINGClient) Messages(userId string, handler func(err error)) {
-	client.OAuthConsumer.Get("/v1/users/"+userId+"/conversations", url.Values{}, func(reader io.Reader, err error) {
+func (client *XINGClient) Messages(userID string, handler func(err error)) {
+	client.OAuthConsumer.Get("/v1/users/"+userID+"/conversations", url.Values{}, func(reader io.Reader, err error) {
 		robots, readError := ioutil.ReadAll(reader)
 
 		println(fmt.Sprintf("%s", robots))

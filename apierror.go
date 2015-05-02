@@ -13,6 +13,7 @@ type APIError struct {
 	ErrorName     string `json:"error_name"`
 }
 
+// String makes APIError conform to Stringer interface.
 func (error APIError) String() string {
 	return error.Message + ". Ban time: " + strconv.Itoa(error.BanTime) + " seconds"
 }

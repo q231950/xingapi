@@ -1,8 +1,6 @@
-// address.go
-
 package xingapi
 
-// Address model for user and company entities
+// Address represents user and companys' addresses.
 type Address struct {
 	Street   string
 	Zipcode  string `json:"zip_code"`
@@ -11,6 +9,7 @@ type Address struct {
 	Country  string
 }
 
-func (a Address) String() string {
-	return a.Street + a.Province + a.City + a.Zipcode + a.Country
+// String makes Address conform to Stringer interface.
+func (address Address) String() string {
+	return address.Street + address.Province + address.City + address.Zipcode + address.Country
 }
