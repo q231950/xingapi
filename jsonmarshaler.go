@@ -1,6 +1,3 @@
-/*
-Package xingapi contains the JSONMarshaler that allows marshaling and unmarshaling all entities to and from JSON
-*/
 package xingapi
 
 import (
@@ -39,11 +36,11 @@ type UserUnmarshaler interface {
 }
 
 /*
-JSONMarshaler is a concrete implementation of
-- UsersMarshaler/UsersUnmarshaler
-- CredentialsMarshaler/CredentialsUnmarshaler
-- ContactsListUnmarshaler
-- UserUnmarshaler
+The JSONMarshaler is a concrete implementation of
+UsersMarshaler/UsersUnmarshaler,
+CredentialsMarshaler/CredentialsUnmarshaler,
+ContactsListUnmarshaler and UserUnmarshaler.
+The JSONMarshaler that allows marshaling and unmarshaling all entities to and from JSON.
 */
 type JSONMarshaler struct{}
 
