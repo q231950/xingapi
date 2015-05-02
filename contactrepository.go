@@ -36,7 +36,7 @@ func (repo *ContactRepository) requestLoadUsers(request UsersRequest) {
 		limit = request.Limit - (request.Offset + request.Limit - request.Total)
 	}
 
-	newRequest := UsersRequest{request.UserId,
+	newRequest := UsersRequest{request.UserID,
 		limit,
 		request.Offset,
 		request.Total,
@@ -45,12 +45,12 @@ func (repo *ContactRepository) requestLoadUsers(request UsersRequest) {
 }
 
 func (repo *ContactRepository) loadUsers(users []*User, request UsersRequest) {
-	repo.client.ContactsList(request.UserId, request.Limit, request.Offset, func(list ContactsList, err error) {
+	repo.client.ContactsList(request.UserID, request.Limit, request.Offset, func(list ContactsList, err error) {
 		if err == nil {
 			repo.loadUserDetails(list, func(loadedUsers []*User, err error) {
 				users = append(users, loadedUsers...)
 				if !request.IsFinal() {
-					newRequest := UsersRequest{request.UserId, request.Limit, request.Offset + len(list.UserIDs), request.Total, request.Completion}
+					newRequest := UsersRequest{request.UserID, request.Limit, request.Offset + len(list.UserIDs), request.Total, request.Completion}
 					repo.loadUsers(users, newRequest)
 				} else {
 					// finished final request without errors
