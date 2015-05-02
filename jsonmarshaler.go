@@ -82,8 +82,8 @@ func (JSONMarshaler) UnmarshalContactsList(reader io.Reader) (ContactsList, erro
 	list := new(ContactsList)
 
 	if err == nil {
-		list.Total = jsonlist.JSONContactsUserIdList.Total
-		list.UserIDs = jsonlist.JSONContactsUserIdList.UserIds()
+		list.Total = jsonlist.JSONContactsUserIDList.Total
+		list.UserIDs = jsonlist.JSONContactsUserIDList.UserIDs()
 	}
 	return *list, err
 }

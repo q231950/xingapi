@@ -1,16 +1,21 @@
-// jsoncontactslist.go
 package xingapi
 
+// JSONContactsList is a wrapper for parsing contacts JSON.
 type JSONContactsList struct {
-	JSONContactsUserIdList JSONContactsUserIdList `json:"contacts"`
+	JSONContactsUserIDList JSONContactsUserIDList `json:"contacts"`
 }
 
-type JSONContactsUserIdList struct {
-	Total int `json:"total"`
+/*
+JSONContactsUserIDList is a wrapper for parsing ContactsLists that consist of
+a Total number of users and a list of UserIDs
+*/
+type JSONContactsUserIDList struct {
+	Total int                 `json:"total"`
 	Users []map[string]string `json:"users"`
 }
 
-func (jsonList *JSONContactsUserIdList) UserIds() []string {
+// UserIDs returns a list of UserIDs for the list's users
+func (jsonList *JSONContactsUserIDList) UserIDs() []string {
 	userIds := []string{}
 
 	for _, idMap := range jsonList.Users {
