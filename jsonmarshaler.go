@@ -35,6 +35,11 @@ type UserUnmarshaler interface {
 	UnmarshalUser(reader io.Reader) (User, error)
 }
 
+// UserMarshaler defines marshaler for marshaling user to JSON
+type UserMarshaler interface {
+	MarshalUser(user User) (bytes []byte, err error)
+}
+
 /*
 The JSONMarshaler is a concrete implementation of
 UsersMarshaler/UsersUnmarshaler,
@@ -94,4 +99,9 @@ func (JSONMarshaler) UnmarshalUser(reader io.Reader) (User, error) {
 	marshaler = JSONMarshaler{}
 	users, err := marshaler.UnmarshalUsers(reader)
 	return *users.Users[0], err
+}
+
+// MarshalUser concrete implementation
+func (JSONMarshaler) MarshalUser(user User) ([]byte, error) {
+	return json.Marshal(user)
 }
