@@ -1,5 +1,3 @@
-// dummyuser.go
-
 package xingapi
 
 type DummyUser struct {

@@ -1,29 +1,24 @@
-// contactrespository.go
-
 package xingapi
 
-import (
-	"fmt"
-	"github.com/str1ngs/ansi/color"
+import "sync"
 
-	"sync"
-)
-
+// ContactRepository represents a repository to retrieve and store contacts
 type ContactRepository struct {
 	client Client
 }
 
+// NewContactRepository creates a new contact repository given a API client
 func NewContactRepository(client Client) *ContactRepository {
 	return &ContactRepository{client}
 }
 
-func (repo *ContactRepository) Contacts(userId string, contactsHandler func(list []*User, err error)) {
-	repo.client.ContactsList(userId, 0, 0, func(list ContactsList, err error) {
+// Contacts fetches all contacts of the user with the given user ID
+func (repo *ContactRepository) Contacts(userID string, contactsHandler func(list []*User, err error)) {
+	repo.client.ContactsList(userID, 0, 0, func(list ContactsList, err error) {
 		if err == nil {
-			color.Printf("", fmt.Sprintf("-----------------------------------\n%d Contacts\n", list.Total))
 			if 0 < list.Total {
 				limit := 50
-				request := UsersRequest{userId, limit, 0, list.Total, contactsHandler}
+				request := UsersRequest{userID, limit, 0, list.Total, contactsHandler}
 				repo.requestLoadUsers(request)
 			} else {
 				contactsHandler([]*User{}, nil)
@@ -72,9 +67,9 @@ func (repo *ContactRepository) loadUserDetails(list ContactsList, loadedUsers fu
 	users := []*User{}
 	//	var err error
 	var waitGroup sync.WaitGroup
-	for _, contactUserId := range list.UserIds {
+	for _, contactUserID := range list.UserIds {
 		waitGroup.Add(1)
-		go repo.client.User(contactUserId, func(user User, cerr error) {
+		go repo.client.User(contactUserID, func(user User, cerr error) {
 			if cerr == nil {
 				users = append(users, &user)
 			} else {
