@@ -9,7 +9,7 @@ type DummyClient struct {
 
 func (client *DummyClient) ContactsList(userID string, limit int, offset int, handler ContactsHandler) {
 	list := new(ContactsList)
-	list.UserIds = []string{"userId 1", "userId 2"}
+	list.UserIDs = []string{"userId 1", "userId 2"}
 	list.Total = 2
 	handler(*list, nil)
 }

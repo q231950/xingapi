@@ -50,7 +50,7 @@ func (repo *ContactRepository) loadUsers(users []*User, request UsersRequest) {
 			repo.loadUserDetails(list, func(loadedUsers []*User, err error) {
 				users = append(users, loadedUsers...)
 				if !request.IsFinal() {
-					newRequest := UsersRequest{request.UserId, request.Limit, request.Offset + len(list.UserIds), request.Total, request.Completion}
+					newRequest := UsersRequest{request.UserId, request.Limit, request.Offset + len(list.UserIDs), request.Total, request.Completion}
 					repo.loadUsers(users, newRequest)
 				} else {
 					// finished final request without errors
@@ -67,7 +67,7 @@ func (repo *ContactRepository) loadUserDetails(list ContactsList, loadedUsers fu
 	users := []*User{}
 	//	var err error
 	var waitGroup sync.WaitGroup
-	for _, contactUserID := range list.UserIds {
+	for _, contactUserID := range list.UserIDs {
 		waitGroup.Add(1)
 		go repo.client.User(contactUserID, func(user User, cerr error) {
 			if cerr == nil {

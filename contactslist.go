@@ -1,7 +1,7 @@
-// contactslist.go
 package xingapi
 
+// ContactsList holds a list of UserIDs
 type ContactsList struct {
-	UserIds []string
-	Total int
+	UserIDs []string
+	Total   int
 }
