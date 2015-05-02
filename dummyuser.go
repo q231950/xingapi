@@ -1,5 +1,6 @@
 package xingapi
 
+// DummyUser is used as a mock in tests that need a user mock
 type DummyUser struct {
 	XINGUser
 }

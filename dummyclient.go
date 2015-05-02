@@ -15,6 +15,6 @@ func (client *DummyClient) ContactsList(userID string, limit int, offset int, ha
 }
 
 // User is a fake User implementation
-func (client *DummyClient) User(contactUserId string, handler UserHandler) {
+func (client *DummyClient) User(contactUserID string, handler UserHandler) {
 	handler(client.DummyUsers[0], nil)
 }

@@ -1,22 +1,24 @@
-// credentialstore.go
-
 package xingapi
 
 import (
-	"os"
 	"bufio"
-	)
+	"os"
+)
 
+// The file name for the file to store the credentials in
 const credentialsFileName = "credentialsFile.txt"
 
+// Credentials are used to authenticate against the API via OAuth
 type Credentials struct {
-	Token string `json:"token"`
+	Token  string `json:"token"`
 	Secret string `json:"secret"`
 }
 
-type CredentialStore struct {}
+// CredentialStore stores credentials
+type CredentialStore struct{}
 
-func (store *CredentialStore)SaveCredentials(credentials Credentials) error {
+// SaveCredentials saves the given credentials
+func (store *CredentialStore) SaveCredentials(credentials Credentials) error {
 	var marshaler CredentialsMarshaler
 	marshaler = JSONMarshaler{}
 	file, _ := os.Create(credentialsFileName)
@@ -26,7 +28,8 @@ func (store *CredentialStore)SaveCredentials(credentials Credentials) error {
 	return err
 }
 
-func (store *CredentialStore)Credentials() (Credentials, error) {
+// Credentials returns the stored credentials or an error if no credentials have been stored
+func (store *CredentialStore) Credentials() (Credentials, error) {
 	var unmarshaler CredentialsUnmarshaler
 	unmarshaler = JSONMarshaler{}
 	file, err := os.Open(credentialsFileName)
