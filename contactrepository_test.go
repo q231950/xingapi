@@ -11,8 +11,13 @@ import (
 func TestGetContacts(t *testing.T) {
 	client := new(DummyClient)
 	dummyUsers := make([]User, 2)
-	dummyUsers[0] = new(DummyUser)
-	dummyUsers[1] = new(DummyUser)
+	firstDummy := new(DummyUser)
+	firstDummy.UserID = "userId 1"
+	dummyUsers[0] = firstDummy
+
+	secondDummy := new(DummyUser)
+	secondDummy.UserID = "userId 2"
+	dummyUsers[1] = secondDummy
 	client.DummyUsers = dummyUsers
 	repository := NewContactRepository(client)
 

@@ -1,6 +1,6 @@
 package xingapi
 
-// DummyClient is used as a mock for tests the need a Client
+// DummyClient is used as a mock for tests that need a Client
 type DummyClient struct {
 	Client
 	DummyUsers []User
@@ -16,5 +16,9 @@ func (client *DummyClient) ContactsList(userID string, limit int, offset int, ha
 
 // User is a fake User implementation
 func (client *DummyClient) User(contactUserID string, handler UserHandler) {
-	handler(client.DummyUsers[0], nil)
+	if contactUserID == "userId 1" {
+		handler(client.DummyUsers[0], nil)
+	} else {
+		handler(client.DummyUsers[1], nil)
+	}
 }
