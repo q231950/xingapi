@@ -3,7 +3,7 @@ package xingapi
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
+	//	"io/ioutil"
 	"net/url"
 	"strconv"
 )
@@ -87,10 +87,13 @@ func (client *XINGClient) User(id string, handler UserHandler) {
 // Messages fetches the conversations of the user with the given id and prints out raw json
 func (client *XINGClient) Messages(userID string, handler func(err error)) {
 	client.OAuthConsumer.Get("/v1/users/"+userID+"/conversations", url.Values{}, func(reader io.Reader, err error) {
-		robots, readError := ioutil.ReadAll(reader)
+		//robots, _ := ioutil.ReadAll(reader)
 
-		println(fmt.Sprintf("%s", robots))
+		//println(fmt.Sprintf("%s", robots))
 
-		handler(readError)
+		var unmarshaler = ConversationsMarshaler{}
+		conversationsList, JSONError := unmarshaler.UnmarshalConversationList(reader)
+		println(fmt.Sprintf("%s", conversationsList.ConversationsList.Conversations))
+		handler(JSONError)
 	})
 }
