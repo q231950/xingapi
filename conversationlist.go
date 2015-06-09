@@ -1,6 +1,6 @@
 package xingapi
 
 type ConversationsList struct {
-	Total         int             `json:"total"`
+	Total         string          `json:"total"`
 	Conversations []*Conversation `json:"items"`
 }

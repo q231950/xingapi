@@ -6,6 +6,7 @@ import (
 	//	"io/ioutil"
 	"net/url"
 	"strconv"
+	"sync"
 )
 
 // A UserHandler is used as parameter to methods that fetch a User. Either the User or error might be nil.
@@ -84,16 +85,46 @@ func (client *XINGClient) User(id string, handler UserHandler) {
 	})
 }
 
+// Users fetches the users according to the given user IDs
+func (client *XINGClient) Users(userIDs []string) []User {
+	users := []User{}
+	var waitGroup sync.WaitGroup
+	for _, userID := range userIDs {
+		waitGroup.Add(1)
+		client.User(userID, func(user User, err error) {
+			if err == nil {
+				PrintUserOneLine(user)
+				users = append(users, user)
+			}
+			waitGroup.Add(-1)
+		})
+	}
+
+	waitGroup.Wait()
+	return users
+}
+
 // Messages fetches the conversations of the user with the given id and prints out raw json
 func (client *XINGClient) Messages(userID string, handler func(err error)) {
 	client.OAuthConsumer.Get("/v1/users/"+userID+"/conversations", url.Values{}, func(reader io.Reader, err error) {
-		//robots, _ := ioutil.ReadAll(reader)
-
-		//println(fmt.Sprintf("%s", robots))
-
+		fmt.Println("begin messages")
 		var unmarshaler = ConversationsMarshaler{}
-		conversationsList, JSONError := unmarshaler.UnmarshalConversationList(reader)
-		println(fmt.Sprintf("%s", conversationsList.ConversationsList.Conversations))
+		conversationsInfo, JSONError := unmarshaler.UnmarshalConversationList(reader)
+		if JSONError == nil {
+			fmt.Println("hulu")
+			for _, Conversation := range conversationsInfo.ConversationsList.Conversations {
+				fmt.Println(Conversation)
+				userIDs := []string{}
+				userID_0 := Conversation.Participants[0].UserID
+				userID_1 := Conversation.Participants[1].UserID
+				userIDs = append(userIDs, userID_0)
+				userIDs = append(userIDs, userID_1)
+				client.Users(userIDs)
+				fmt.Println("-------")
+			}
+		} else {
+			PrintError(JSONError)
+		}
 		handler(JSONError)
 	})
 }
