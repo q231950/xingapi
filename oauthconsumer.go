@@ -75,7 +75,7 @@ func (consumer *OAuthConsumer) Get(path string, parameters url.Values, handler R
 			var apiError APIError
 			responseJSON, _ := ioutil.ReadAll(resp.Body)
 			err := json.Unmarshal(responseJSON, &apiError)
-			if err != nil {
+			if err == nil {
 				fmt.Println(apiError)
 			}
 		}
