@@ -91,12 +91,12 @@ func (client *XINGClient) Users(userIDs []string) []User {
 	var waitGroup sync.WaitGroup
 	for _, userID := range userIDs {
 		waitGroup.Add(1)
-		client.User(userID, func(user User, err error) {
+		go client.User(userID, func(user User, err error) {
 			if err == nil {
 				PrintUserOneLine(user)
 				users = append(users, user)
 			}
-			waitGroup.Add(-1)
+			waitGroup.Done()
 		})
 	}
 
