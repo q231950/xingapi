@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -28,7 +29,7 @@ func NewContactRepository(client Client) *ContactRepository {
 
 // Contacts fetches all contacts of the user with the given user ID
 func (repo *ContactRepository) Contacts(userID string, contactsHandler func(list []*User, err error)) {
-
+	fmt.Println("Fetching contacts from repository...")
 	repo.client.ContactsList(userID, 0, 0, func(list ContactsList, err error) {
 		if err == nil {
 			if 0 < list.Total {
@@ -36,9 +37,11 @@ func (repo *ContactRepository) Contacts(userID string, contactsHandler func(list
 				request := UsersRequest{userID, limit, 0, list.Total, contactsHandler}
 				repo.requestLoadUsers(request)
 			} else {
+				fmt.Println("Repository is empty.")
 				contactsHandler([]*User{}, nil)
 			}
 		} else {
+			fmt.Println("Error occurred.")
 			contactsHandler(nil, err)
 		}
 	})
@@ -61,13 +64,17 @@ func (repo *ContactRepository) requestLoadUsers(request UsersRequest) {
 
 func (repo *ContactRepository) loadUsers(users []*User, request UsersRequest) {
 	repo.client.ContactsList(request.UserID, request.Limit, request.Offset, func(list ContactsList, err error) {
+		fmt.Println("Loading users from repository...")
 		if err == nil {
 			repo.loadUserDetails(list, func(loadedUsers []*User, err error) {
 				users = append(users, loadedUsers...)
+				fmt.Printf("Currently loaded %d users", len(users))
 				if !request.IsFinal() {
+					fmt.Println("continue... ")
 					newRequest := UsersRequest{request.UserID, request.Limit, request.Offset + len(list.UserIDs), request.Total, request.Completion}
 					repo.loadUsers(users, newRequest)
 				} else {
+					fmt.Printf("finished loading %d.", len(users))
 					// finished final request without errors
 					repo.storeUsers(users)
 					request.Completion(users, nil)
@@ -79,11 +86,12 @@ func (repo *ContactRepository) loadUsers(users []*User, request UsersRequest) {
 	})
 }
 
-var world = []byte("nameBucket")
+var usersBucket = []byte("usersBucket")
 
 func (repo *ContactRepository) storeUsers(users []*User) {
+	fmt.Println("Storing users...")
 	for _, user := range users {
-
+		fmt.Println("Store " + "user " + ".")
 		var marshaler UserMarshaler
 		marshaler = JSONMarshaler{}
 		// writer := bufio.NewWriter()
@@ -93,7 +101,7 @@ func (repo *ContactRepository) storeUsers(users []*User) {
 			value := bytes
 
 			err = repo.db.Update(func(tx *bolt.Tx) error {
-				bucket, err := tx.CreateBucketIfNotExists(world)
+				bucket, err := tx.CreateBucketIfNotExists(usersBucket)
 				if err != nil {
 					return err
 				}
@@ -115,12 +123,13 @@ func (repo *ContactRepository) storeUsers(users []*User) {
 // Contact gets the user with the given name
 func (repo *ContactRepository) Contact(name string, done func()) {
 
+	fmt.Println("Looking for user named " + name + ".")
 	key := []byte(name)
 	// retrieve the data
 	err := repo.db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(world)
+		bucket := tx.Bucket(usersBucket)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", world)
+			return fmt.Errorf("Bucket %q not found!", usersBucket)
 		}
 
 		val := bucket.Get(key)
@@ -143,21 +152,33 @@ func (repo *ContactRepository) Contact(name string, done func()) {
 }
 
 func (repo *ContactRepository) loadUserDetails(list ContactsList, loadedUsers func(userList []*User, err error)) {
+	fmt.Println("Load details for users...")
 	users := []*User{}
-	//	var err error
 	var waitGroup sync.WaitGroup
+	var userDetailsChannel chan User = make(chan User)
+
 	for _, contactUserID := range list.UserIDs {
 		waitGroup.Add(1)
-		go repo.client.User(contactUserID, func(user User, cerr error) {
-			if cerr == nil {
-				users = append(users, &user)
-			} else {
-				PrintError(cerr)
-				//				err = cerr
-			}
-			defer waitGroup.Done()
-		})
+		go repo.UserDetails(contactUserID, &waitGroup, userDetailsChannel)
+		user := <-userDetailsChannel
+		users = append(users, &user)
+		const delay = 1 * time.Second
+		time.Sleep(delay)
 	}
 	waitGroup.Wait()
 	loadedUsers(users, nil)
+}
+
+func (repo ContactRepository) UserDetails(userID string, wg *sync.WaitGroup, userChannel chan User) {
+	fmt.Println("loading " + userID + "...")
+	repo.client.User(userID, func(user User, cerr error) {
+		if cerr == nil {
+			fmt.Print("done.")
+			wg.Done()
+			userChannel <- user
+		} else {
+			PrintError(cerr)
+			wg.Done()
+		}
+	})
 }
