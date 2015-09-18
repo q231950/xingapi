@@ -2,6 +2,7 @@ package xingapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 )
 
@@ -98,7 +99,8 @@ func (JSONMarshaler) UnmarshalUser(reader io.Reader) (User, error) {
 	var marshaler UsersUnmarshaler
 	marshaler = JSONMarshaler{}
 	users, err := marshaler.UnmarshalUsers(reader)
-	return *users.Users[0], err
+	fmt.Printf("%d", len(users.Users))
+	return users.Users[0], err
 }
 
 // MarshalUser concrete implementation
