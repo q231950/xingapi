@@ -17,7 +17,7 @@ type User interface {
 
 // XINGUser is the concrete implementation of a User
 type XINGUser struct {
-	InternalName            string    `json:"name"`
+	InternalName            string    `json:"first_name"`
 	InternalDisplayName     string    `json:"display_name"`
 	InternalID              string    `json:"id"`
 	InternalActiveEmail     string    `json:"active_email"`
