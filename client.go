@@ -3,7 +3,6 @@ package xingapi
 import (
 	"fmt"
 	"io"
-	//	"io/ioutil"
 	"net/url"
 	"strconv"
 	"sync"
@@ -52,6 +51,7 @@ func (client *XINGClient) Me(handler UserHandler) {
 
 // ContactsList fetches the contact list of the logged in user from the offset with a batch count of limit
 func (client *XINGClient) ContactsList(userID string, limit int, offset int, handler ContactsHandler) {
+	fmt.Println("Loading contacts list from server...")
 	consumer := new(OAuthConsumer)
 	client.OAuthConsumer = *consumer
 	v := url.Values{}
@@ -64,6 +64,7 @@ func (client *XINGClient) ContactsList(userID string, limit int, offset int, han
 		unmarshaler = JSONMarshaler{}
 		list, jsonError := unmarshaler.UnmarshalContactsList(reader)
 		if jsonError != nil {
+			fmt.Println("Error while loading contacts list")
 			err = jsonError
 		}
 		handler(list, err)
@@ -72,6 +73,7 @@ func (client *XINGClient) ContactsList(userID string, limit int, offset int, han
 
 // User fetches the User for the given user id
 func (client *XINGClient) User(id string, handler UserHandler) {
+	fmt.Println("client gets user <" + id + ">")
 	consumer := new(OAuthConsumer)
 	client.OAuthConsumer = *consumer
 	client.OAuthConsumer.Get("/v1/users/"+id, url.Values{}, func(reader io.Reader, err error) {
@@ -80,6 +82,7 @@ func (client *XINGClient) User(id string, handler UserHandler) {
 		user, jsonError := unmarshaler.UnmarshalUser(reader)
 		if jsonError != nil {
 			err = jsonError
+			PrintError(err)
 		}
 		handler(user, err)
 	})
@@ -111,7 +114,6 @@ func (client *XINGClient) Messages(userID string, handler func(err error)) {
 		var unmarshaler = ConversationsMarshaler{}
 		conversationsInfo, JSONError := unmarshaler.UnmarshalConversationList(reader)
 		if JSONError == nil {
-			fmt.Println("hulu")
 			for _, Conversation := range conversationsInfo.ConversationsList.Conversations {
 				fmt.Println(Conversation)
 				userIDs := []string{}
